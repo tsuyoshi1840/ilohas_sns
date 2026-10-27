@@ -1,0 +1,1147 @@
+/* ==========================================
+   1. カラー変数の定義（いろはすカラー仕様）
+========================================== */
+:root {
+    --bg-main: #ffffff;
+    --text-main: #0f1419;
+    --text-sub: #536471;
+    --border-color: #eff3f4;
+    --hover-bg: #f7f7f7;
+    --btn-bg: #eff3f4;
+    --input-bg: transparent;
+    
+    /* いろはすカラー（爽やかな黄緑と水色） */
+    --btn-blue: #34b3a0;        /* メインのいろはすグリーン */
+    --btn-blue-hover: #299182;  /* ホバー時の少し濃いグリーン */
+    --ilohas-sky: #4bc0e6;     /* アクセントの水色 */
+    
+    --like-color: #f91880;
+    --like-bg-hover: rgba(249, 24, 128, 0.1);
+}
+
+[data-theme="dark"] {
+    --bg-main: #000000;
+    --text-main: #e7e9ea;
+    --text-sub: #71767b;
+    --border-color: #2f3336;
+    --hover-bg: #080808;
+    --btn-bg: #2f3336;
+    
+    /* ダークモード用のいろはすカラー */
+    --btn-blue: #32ca1e;        /* 暗闇で映えるライトグリーン */
+    --btn-blue-hover: #27a317;
+    --ilohas-sky: #3ab0d6;
+    
+    --like-color: #f91880;
+    --like-bg-hover: rgba(249, 24, 128, 0.2);
+}
+/* ----------------------------------------------------------------------------------- */
+
+/* ==========================================
+   PHPのHTMLをいじらずにボタン化するCSS
+========================================== */
+
+/* 1. 外側のdivを「綺麗なボタン」の見た目にする */
+.post-form__media-upload {
+    position: relative;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: var(--btn-bg);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+    overflow: hidden; /* はみ出し防止 */
+}
+
+.post-form__media-upload input[type="file"]::file-selector-button {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background-color: transparent;
+}
+
+/* ホバー時のデザイン */
+.post-form__media-upload:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--btn-blue);
+    color: var(--btn-blue);
+}
+
+/* 3. 中にあるファイルインプットを「透明にして全体に被せる」 */
+.file-upload-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;      /*完全に透明にする */
+    cursor: pointer;
+}
+/* ------------------------------------------------------------------- */
+/* ==========================================
+   2. 全体の基本設定 & 2カラムレイアウト
+========================================== */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "BIZ UDPGothic", Meiryo, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    font-size: 15px; 
+}
+
+.layout {
+    display: flex;
+    width: 100%;
+    max-width: 1250px;
+    min-height: 100vh;
+}
+
+/* ===== 左サイドバー ===== */
+.sidebar {
+    width: 275px;
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+    display: flex !important;
+    flex-direction: column !important; /* 強制的に並び替え可能にする */
+    position: fixed;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+/* 順序指定：1. ロゴ */
+.sidebar__logo {
+    order: 1 !important;
+    display: inline-block;
+    margin-bottom: 20px;
+    padding-left: 10px;
+}
+
+.sidebar__logo img {
+    width: 140px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .sidebar__logo img {
+    filter: invert(1) hue-rotate(180deg);
+    opacity: 0.9;
+}
+
+/* 順序指定：2. メニュー（ホーム・プロフィール・ログアウト） */
+.sidebar__menu {
+    order: 2 !important;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar__item {
+    margin-bottom: 10px;
+}
+
+.sidebar__link {
+    display: flex;       
+    align-items: center; 
+    gap: 15px;           
+    font-size: 19px;
+    font-weight: bold;
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+    width: max-content;  
+}
+
+.sidebar__link:hover {
+    background-color: var(--hover-bg);
+}
+
+.sidebar__icon {
+    width: 40px !important;
+    height: 40px !important;
+    max-width: 40px !important; 
+    display: inline-block !important;
+    object-fit: contain;
+    transition: transform 0.2s;
+}
+
+.sidebar__link:hover .sidebar__icon {
+    transform: scale(1.1);
+}
+
+/* 普段隠す文字 */
+.sidebar__text {
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    font-size: 15px;
+    transition: opacity 0.25s ease, max-width 0.25s ease;
+}
+
+.sidebar:hover .sidebar__text {
+    opacity: 1;
+    max-width: 150px; 
+}
+
+[data-theme="dark"] .sidebar__icon {
+    filter: invert(1);
+}
+
+/* 順序指定：3. ポストするボタンをログアウトの下へ配置 */
+.sidebar .sidebar__post-btn-icon {
+    order: 3 !important;
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    display: flex !important;
+}
+
+/* 順序指定：4. モード切り替えボタンをメニューのド底へ配置 */
+.sidebar #theme-toggle {
+    order: 4 !important;
+    background-color: var(--btn-bg);
+    color: var(--text-main);
+    margin-top: 5px !important;
+    /* ?削除：鑓分 */
+    font-size: 14px;
+    padding: 12px 20px !important;
+    border-radius: 8px; 
+    border: none;
+    cursor: pointer;
+    width: max-content;
+}
+
+/* POST追加　鑓分 */
+.sidebar .sidebar__post-btn{
+    width: fit-content;
+    order:5 !important;
+    
+    margin:16px 0 0 ;
+    display: flex !important;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: 9999px;
+    color: inherit;
+    font-size: 19px;
+    font-weight: 700;
+    text-decoration: none;
+    background-color: transparent;
+}
+.sidebar .sidebar__post-btn:hover{
+    background-color: var(--hover-bg);
+}
+/* 順序指定：5.←６変更：yariwake ログインユーザー情報 */
+.sidebar .sidebar__user {
+    order: 6 !important;
+    margin-top: auto !important; /* 確実にド底に固定 */
+    margin-bottom: 10px !important;
+    padding-left: 8px !important; 
+
+    justify-content: flex-start !important;
+}
+
+.sidebar__user-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.sidebar__user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar__user-name {
+    display: none !important; /* ユーザー名は非表示 */
+}
+
+.sidebar__user-id {
+    display: block !important;
+    color: var(--text-sub);
+    font-size: 13px;
+    margin-top: 0;
+}
+
+/* ===== 右側メインエリア ===== */
+.main {
+    margin-left: 275px;
+    flex-grow: 1;
+    max-width: 0;
+    width: auto;
+    min-height: 100vh;
+    border-right: 1px solid var(--border-color);
+}
+
+/* ==========================================
+   3. 各ページ共通のパーツスタイル
+========================================== */
+.page-header {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 53px; 
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border-color);
+    box-sizing: border-box;
+    transition: padding 0.3s, height 0.3s, background-color 0.3s;
+}
+
+[data-theme="dark"] .page-header {
+    background-color: rgba(0, 0, 0, 0.85);
+}
+
+.page-header.is-small {
+    height: 40px;
+}
+
+.page-header__back {
+    font-size: 20px;
+    text-decoration: none;
+    color: var(--text-main); 
+    margin-right: 20px;
+}
+
+/* ヘッダーのタイトル非表示 */
+.page-header__title {
+    display: none !important;
+}
+
+/* ==========================================
+   4. 投稿フォームのスタイル
+========================================== */
+.post-form {
+    display: flex;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.post-form__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.post-form__body {
+    flex-grow: 1;
+}
+
+.post-form__textarea {
+    width: 100%;
+    border: none;
+    background-color: var(--input-bg);
+    color: var(--text-main);
+    font-size: 20px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+}
+
+.post-form__footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;    
+    gap: 15px;
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 12px;
+}
+
+.post-form__textarea {
+    color: var(--text-sub);
+    width: 100%;          /* 親要素の幅いっぱいに広げる場合 */
+    font-size: 14px;
+    min-height: 150px;    /* 高さを十分に確保する（お好みの高さに変更してください） */
+    padding: 12px;        /* 余白を調整して入力しやすくする */
+    box-sizing: border-box; /* paddingを含めて幅を計算させる */
+}
+
+/* ==========================================
+   5. タイムライン・投稿(ポスト)のスタイル
+========================================== */
+.timeline {
+    width: 100%;
+}
+
+.post {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+    background-color: var(--bg-main) !important; 
+}
+
+.post:hover {
+    background-color: var(--hover-bg);
+}
+
+.post__icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.post__icon, .post-form__icon, .sidebar__user-icon, .profile__icon {
+    object-fit: cover;
+    background-color: var(--border-color);
+}
+
+.post__content {
+    flex-grow: 1;
+}
+
+.post__header {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    margin-bottom: 2px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.post__user-name {
+    font-weight: bold;
+    color: var(--text-main);
+    text-decoration: none;
+}
+
+.post__user-name:hover {
+    text-decoration: underline;
+}
+
+.post__user-id, .post__time {
+    color: var(--text-sub);
+}
+
+.post__body {
+    font-size: 15px;
+    line-height: 20px;
+    margin: 4px 0 0 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.post__actions {
+    display: flex;
+    gap: 40px;
+    margin-top: 12px;
+}
+
+.post__action {
+    background: none;
+    border: none;
+    color: var(--text-sub);
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 9999px;
+    transition: background-color 0.2s, color 0.2s;
+    outline: none;
+}
+
+.post__action--like:hover {
+    background-color: var(--like-bg-hover);
+    color: var(--like-color);
+}
+
+.post__action--like.is-liked {
+    color: var(--like-color);
+}
+
+.post__action--delete:hover {
+    background-color: rgba(244, 33, 46, 0.1);
+    color: #f4212e;
+}
+
+/* ポストアイコン専用サイズ指定 */
+.sidebar__post-btn-icon .sidebar__icon {
+    width: 40px !important;
+    height: 40px !important;
+    max-width: 40px !important;
+    display: inline-block !important;
+    object-fit: contain;
+}
+
+[data-theme="dark"] .sidebar__post-btn-icon .sidebar__icon {
+    filter: invert(1); 
+}
+
+/* ==========================================
+   投稿フォームのメイン「POST」ボタン紙飛行機化
+========================================== */
+#js-post-submit,
+.post-form__submit { 
+    background: none !important;
+    background-image: url('../img/post-flight.png') !important; 
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    color: transparent !important; 
+    border: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+}
+
+#js-post-submit:hover,
+.post-form__submit:hover {
+    transform: scale(1.1) !important;
+}
+
+.post-form__actions,
+.post-form__footer { 
+    justify-content: flex-end !important;
+    padding-right: 4px !important; 
+}
+/* ==========================================
+   PC用：「モード切り替え」の文字を細文字化（標準化）
+========================================== */
+#theme-toggle .sidebar__text {
+    font-weight: normal !important;
+}
+
+/* ==========================================
+   PC用：タイムラインエリア（BODY）を右側に広げる
+========================================== */
+/* 1. 画面全体の最大横幅の制限（1250px）を少し広げて、ゆとりを持たせる */
+.layout {
+    max-width: 1400px !important; /* 👈 1250pxから1400pxに拡張 */
+}
+
+/* 2. タイムラインエリア（.main）の最大幅を広げて右側へ伸長させる */
+.main {
+    max-width: 850px !important; /* 👈 600pxから850pxに大きく広げる */
+}
+
+/* ==========================================
+   PC用：サイドメニューのプロフィールアイコンだけを単独で少し小さく調整
+========================================== */
+/* 元の画像が大きいため、このアイコンだけ枠のサイズを小さく絞ってバランスを取ります */
+.sidebar__item:nth-child(2) .sidebar__icon,
+.sidebar__link img[src*="profile-icon"] {
+    width: 34px !important;    /* 👈 40pxから34pxに小さく絞る */
+    height: 34px !important;   /* 👈 40pxから34pxに小さく絞る */
+    max-width: 34px !important;
+    margin-left: 3px !important; /* 👈 サイズを小さくした分、左側に3pxの隙間を作って縦のラインを揃える */
+    margin-right: 3px !important;/* 右側の文字とのバランス調整 */
+    object-fit: contain !important;
+}
+
+/* ==========================================
+   6. プロフィール & 7. 認証画面のスタイル
+========================================== */
+.profile__cover { height: 200px; background-color: var(--border-color); }
+.profile__main { padding: 12px 16px; position: relative; border-bottom: 1px solid var(--border-color); }
+.profile__icon { width: 134px; height: 134px; border-radius: 50%; border: 4px solid var(--bg-main);  }
+.profile__actions { display: flex; justify-content: flex-end; height: 67px; align-items: center; }
+.profile__name { font-size: 20px; font-weight: 800; margin: 4px 0 0 0; }
+.profile__user-id { color: var(--text-sub); font-size: 15px; margin: 0 0 12px 0; }
+.profile__bio { font-size: 15px; line-height: 20px; margin: 0 0 12px 0; }
+.profile__stats { display: flex; gap: 20px; list-style: none; padding: 0; margin: 0; color: var(--text-sub); font-size: 14px; }
+.profile__stat-num { font-weight: bold; color: var(--text-main); }
+.page-auth { display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: var(--bg-main); }
+.auth-wrapper { width: 100%; max-width: 450px; padding: 20px; box-sizing: border-box; }
+.auth-card { background-color: var(--bg-main); padding: 32px; border-radius: 16px; border: 1px solid var(--border-color); }
+.auth-card__logo { text-align: center; color: var(--btn-blue); font-size: 30px; margin-bottom: 20px; }
+.auth-card__title { font-size: 24px; font-weight: bold; margin-bottom: 24px; }
+.form__group { margin-bottom: 16px; }
+.form__label { display: block; font-size: 14px; font-weight: bold; margin-bottom: 6px; color: var(--text-sub); }
+.form__input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 4px; background-color: var(--input-bg); color: var(--text-main); box-sizing: border-box; font-size: 16px; }
+.form__input:focus { border-color: var(--btn-blue); outline: none; }
+.form-error { color: #f4212e; background-color: rgba(244, 33, 46, 0.1); padding: 12px; border-radius: 4px; font-size: 14px; margin-bottom: 16px; }
+.auth-card__link { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-sub); }
+.auth-card__link a { color: var(--btn-blue); text-decoration: none; }
+
+/* ==========================================================================
+   スマホ対応：ロゴ中央・アイコン寄せ・下部アイコンのみ5列仕様（最下部固定）
+   ========================================================================== */
+@media screen and (max-width: 500px) {
+    /* 画面下部にメニューが固定されるため、全体の底に余白を確保 */
+    body {
+        padding-bottom: 70px !important;
+    }
+
+    .layout {
+        flex-direction: column !important;
+    }
+
+    /* メインエリアを横幅いっぱいに広げる */
+    .main {
+        margin-left: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        border-right: none !important;
+    }
+
+    /* 1. 大きな入れ物（.sidebar）を「上部ヘッダー」に変形 */
+    body .sidebar {
+        position: fixed !important; /* 確実に画面上部に固定 */
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 53px !important;
+        min-height: 53px !important;
+        padding: 0 16px !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color) !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        background-color: var(--bg-main) !important;
+        z-index: 200 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* ロゴを上部ヘッダーの完全に中央に配置（絶対配置で中央寄せ） */
+    .sidebar__logo {
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 205 !important;
+    }
+    .sidebar__logo img {
+        width: 100px !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    /* ユーザーアイコンをInstagramのように左側に寄せる配置 */
+    .sidebar__user {
+        margin-right: auto !important; /* 右側を無限に空けて左端へ強制配置 */
+        margin-left: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        position: static !important;
+        transform: none !important;
+        z-index: 210 !important;
+    }
+    .sidebar__user-icon {
+        width: 32px !important;
+        height: 32px !important;
+        margin: 0 !important;
+    }
+    .sidebar__user-info {
+        display: none !important;
+    }
+
+    /* 引っ越し前（上部ヘッダー直下にある状態）のボタン類は非表示 */
+    .sidebar > #pc-post-btn,
+    .sidebar > .sidebar__post-btn-icon,
+    .sidebar > #theme-toggle {
+        display: none !important;
+    }
+
+    /* 2. 【メニュー本体】画面最下部に固定配置 */
+    body .sidebar__menu {
+        position: fixed !important;
+        top: auto !important;     /* 親の上部固定の影響をリセット */
+        bottom: 0 !important;   /* 画面の一番下に配置 */
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 55px !important; /* 文字が消えるので高さをスマートに */
+        background-color: var(--bg-main) !important;
+        border-top: 1px solid var(--border-color) !important;
+        border-right: none !important;
+        border-bottom: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: row !important; /* 横並び */
+        justify-content: space-around !important; /* 均等配置 */
+        align-items: center !important;
+        z-index: 9999 !important; /* 最前面 */
+        box-sizing: border-box !important;
+    }
+
+    /* 5つのメニューアイテムを等幅に並べる */
+    .sidebar__menu .sidebar__item {
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+
+    /* ボタン・リンクのスタイル（アイコンを縦横ど真ん中に配置） */
+    .sidebar__menu .sidebar__link,
+    .sidebar__menu #theme-toggle,
+    .sidebar__menu #pc-post-btn,
+    .sidebar__menu .sidebar__post-btn-icon {
+        width: 100% !important;
+        height: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important; /* 縦方向中央 */
+        align-items: center !important;     /* 横方向中央 */
+        background: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        color: var(--text-main) !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        transform: none !important;
+        transition: none !important;
+    }
+
+    /* 下部メニュー内の全アイコン共通サイズ指定 */
+    .sidebar__menu .sidebar__icon {
+        width: 24px !important;
+        height: 24px !important;
+        max-width: 24px !important;
+        margin: 0 !important;
+        display: inline-block !important;
+    }
+
+    /* メニュー内の文字（ホームやプロフィールなど）を完全に非表示 */
+    .sidebar__menu .sidebar__text {
+        display: none !important;
+    }
+}
+
+
+/* ==========================================================
+   ここから下：ilohas の機能用に追加（いいね・リポスト・返信など）
+   色は上の :root の変数を使っているので、ダークモードにも対応
+   ========================================================== */
+
+/* ----- 投稿フォーム：140文字を超えたら赤く ----- */
+.post-form__counter.is-over { color: #f4212e; }
+
+/* ----- リポスト表示 ----- */
+.post { flex-wrap: wrap; }
+.post__repost-label {
+  flex-basis: 100%;
+  margin: 0 0 4px 60px;
+  color: var(--text-sub);
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* ----- いいね・リポストボタン ----- */
+.post__action--repost:hover { color: #17bf63; }
+.post__action.is-liked      { color: var(--like-color); }
+.post__action.is-reposted   { color: #17bf63; }
+.post__action:disabled      { opacity: 0.6; cursor: wait; }
+.post__action.is-pop .post__action-icon {
+  display: inline-block;
+  animation: reaction-pop 0.35s ease-out;
+}
+@keyframes reaction-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.45); }
+  100% { transform: scale(1); }
+}
+
+/* ----- プロフィール画像 ----- */
+.profile__top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.profile__icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bg-main);
+  box-shadow: 0 0 0 3px var(--btn-blue);
+}
+.profile__icon-form { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.profile__icon-pick { cursor: pointer; }
+.profile__icon-note { flex-basis: 100%; margin: 0; color: var(--text-sub); font-size: 12px; }
+
+/* アイコンは正方形でない画像でも丸く切り抜く */
+.post__icon, .post-form__icon, .sidebar__user-icon { object-fit: cover; }
+
+/* ----- 返信まわり(タイムライン) ----- */
+.post__body-link { color: inherit; text-decoration: none; display: block; }
+.post__body-link:hover .post__body { color: var(--btn-blue); }
+.post__reply-to { margin: 2px 0 0; font-size: 13px; color: var(--text-sub); }
+.post__reply-to span { color: var(--btn-blue); }
+.post__action--reply:hover { color: var(--ilohas-sky); }
+
+/* ----- 詳細ページ ----- */
+.page-header--with-back { display: flex; align-items: center; gap: 16px; }
+.page-header__back {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  color: var(--text-main); text-decoration: none; font-size: 20px;
+  transition: background 0.3s;
+}
+.page-header__back:hover { background: var(--hover-bg); }
+
+.thread__item { position: relative; }
+.thread__item--root { padding-top: 18px; padding-bottom: 18px; }
+.thread__item--root .post__body { font-size: 19px; }
+/* 返信は段ごとに右へずらし、左に線を引く */
+.thread__item--d1 { padding-left: 40px; }
+.thread__item--d2 { padding-left: 64px; }
+.thread__item--d3 { padding-left: 88px; }
+.thread__item--d4 { padding-left: 112px; }
+.thread__item--d1::before, .thread__item--d2::before,
+.thread__item--d3::before, .thread__item--d4::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--btn-blue), var(--ilohas-sky));
+  opacity: 0.45;
+}
+.thread__item--d1::before { left: 28px; }
+.thread__item--d2::before { left: 52px; }
+.thread__item--d3::before { left: 76px; }
+.thread__item--d4::before { left: 100px; }
+
+.thread__item.is-focused { background: var(--hover-bg); }
+.thread__item.is-arrived { animation: arrived-glow 1.6s ease-out; }
+@keyframes arrived-glow {
+  0%   { background: rgba(75, 192, 230, 0.25); }
+  100% { background: transparent; }
+}
+
+.post--deleted { color: var(--text-sub); font-style: italic; }
+.post__deleted-text { margin: 0; font-size: 14px; }
+
+/* ----- 返信欄 ----- */
+.reply-form { margin-top: 10px; }
+.reply-form__textarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+}
+.reply-form__textarea:focus {
+  border-color: var(--btn-blue);
+  outline: none;
+}
+.reply-form__footer { display: flex; justify-content: flex-end; margin-top: 6px; }
+
+@media (max-width: 500px) {
+  .thread__item--d2, .thread__item--d3, .thread__item--d4 { padding-left: 40px; }
+  .thread__item--d2::before, .thread__item--d3::before, .thread__item--d4::before { left: 28px; }
+ 
+ /* 潜り込み修正：鑓分 */
+ .profile-header{padding: 73px !important;}
+  /* スマホポストするボタンを右下に浮かせる 追加：鑓分*/
+.sidebar .sidebar__post-btn{
+    position: fixed;
+    right: 16px;
+    bottom: 72px;
+    width:56px;
+    height: 56px;
+    border-radius:50px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0,0,.25);
+}
+/* スマホの見出しお知らせバー表示 */
+.page-header,
+.page-header.is-small{
+    position: static;
+    height: auto;
+    margin-top: 53px;
+    padding:8px 12px;
+}
+.notice-banner{
+    font-size: 16px;
+    margin-bottom: 0;
+}
+.sidebar .sidebar__post-btn .sidebar__text{display: none !important;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .post__action.is-pop .post__action-icon { animation: none; }
+  .thread__item.is-arrived { animation: none; }
+}
+
+/* ===== 全体お知らせバナーのスタイル（矢印追加対応版） ===== */
+.notice-banner {
+  position: relative;
+  background-color: #2b3a4a;
+  color: #fff;
+  padding: 12px 75px 12px 35px; /* 左右の余白を矢印用に広げる */
+  font-size: 24px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border-radius: 40px;
+}
+
+.notice-carousel {
+  overflow: hidden;
+  width: 100%;
+}
+
+.notice-track {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+  touch-action: pan-y;
+}
+
+.notice-item {
+  min-width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notice-badge {
+  background-color: #e63946;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.notice-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 矢印ボタン共通スタイル */
+.notice-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.notice-arrow:hover {
+  opacity: 1;
+}
+
+/* 左矢印の位置 */
+.notice-prev {
+  left: 8px;
+}
+
+/* 右矢印の位置（×ボタンの左側に来るように調整） */
+.notice-next {
+  right: 38px;
+}
+
+/* 閉じる（×）ボタン */
+.notice-close {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 5px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.notice-close:hover {
+  opacity: 1;
+}
+
+.notice-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.notice-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.notice-dot.active {
+  background-color: #fff;
+}
+:where(.btn) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color .2s, border-color .2s;
+}
+/* メインのボタン(保存など) */
+:where(.btn--primary) {
+  background-color: var(--btn-blue);
+  color: #fff;
+}
+:where(.btn--primary):hover {
+  background-color: var(--btn-blue-hover);
+}
+/* 枠線だけのボタン(画像を選ぶなど) */
+:where(.btn--outline) {
+  background-color: transparent;
+  color: var(--text-main);
+  border-color: var(--text-sub);
+}
+:where(.btn--outline):hover {
+  background-color: var(--hover-bg);
+}
+/* 横幅いっぱいのボタン */
+:where(.btn--block) {
+  display: flex;
+  width: 100%;
+}
+:where(.btn):disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* ===== 入力欄(自己紹介など) ===== */
+:where(.form__textarea) {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--input-bg);
+  color: var(--text-main);
+  font: inherit;
+  font-size: 15px;
+  resize: vertical;
+}
+:where(.form__textarea):focus {
+  outline: none;
+  border-color: var(--btn-blue);
+}
+/* ===== サイドバー:カーソルを乗せたとき・押したときのエフェクト ===== */
+:root {
+  --nav-hover: rgba(52, 179, 160, 0.12);   /* いろはすグリーンをうっすら */
+  --nav-active: rgba(52, 179, 160, 0.25);  /* 押した瞬間は少し濃く */
+}
+[data-theme="dark"] {
+  --nav-hover: rgba(50, 202, 30, 0.15);    /* ダーク用のライトグリーン */
+  --nav-active: rgba(50, 202, 30, 0.30);
+}
+[data-theme="dark"] #js-post-submit{
+    filter:invert(1) !important;
+}
+
+/* カーソルを乗せたとき:背景色を変える */
+.sidebar .sidebar__link:hover,
+.sidebar .sidebar__post-btn:hover {
+  background-color: var(--nav-hover);
+}
+
+/* 押した瞬間:少し縮んで、色が濃くなる */
+.sidebar .sidebar__link,
+.sidebar .sidebar__post-btn {
+  transition: background-color .2s, transform .1s;
+}
+.sidebar .sidebar__link:active,
+.sidebar .sidebar__post-btn:active {
+  background-color: var(--nav-active);
+  transform: scale(0.95);
+}
+/* ==========================================
+   ファイル選択ボタンのカスタムデザイン
+========================================== */
+
+/* 標準のファイル選択インプットを完全に非表示にする */
+/* けした１０２７ */
+
+/* カスタムボタン（ラベル）の外観 */
+.file-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background-color: var(--btn-bg);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 700;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* ホバー時のデザイン（いろはすグリーンのホバー色などを活用） */
+.file-upload-btn:hover {
+    background-color: var(--hover-bg);
+    border-color: var(--btn-blue);
+    color: var(--btn-blue);
+}
+
+/* 選択されたファイル名を表示するテキスト */
+.file-upload-name {
+    margin-left: 8px;
+    font-size: 13px;
+    color: var(--text-sub);
+}
